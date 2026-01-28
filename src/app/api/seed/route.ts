@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
 
-const PROJECT_ROOT = 'C:\\SNIX\\sify\\HrAssist\\exam'
+const PROJECT_ROOT = process.env.PROJECT_ROOT || 'C:\\SNIX\\sify\\HrAssist\\exam'
 const APP_DIR = path.join(PROJECT_ROOT, 'app')
 
 interface PromptSection {
@@ -50,7 +50,8 @@ function parsePromptFile(content: string) {
         const line = lines[i].trim()
 
         // Detect Section Header: "SECTION X: NAME (Lines start-end)" or "SECTION X: NAME"
-        const sectionMatch = line.match(/(?:SECTION|Section)\s*\d+[:.]\s*(.+?)(?:\s*\(Lines\s*(\d+)-(\d+)\))?$/i)
+        // Improved regex to be more robust
+        const sectionMatch = line.match(/^(?:SECTION|Section)\s*(\d+)[:.]\s*(.*)$/i)
 
         if (sectionMatch) {
             // Save previous section
@@ -61,9 +62,22 @@ function parsePromptFile(content: string) {
                 })
             }
 
-            const name = sectionMatch[1].trim()
-            const start = sectionMatch[2] ? parseInt(sectionMatch[2]) : i + 1
-            const end = sectionMatch[3] ? parseInt(sectionMatch[3]) : i + 50
+            const rawName = sectionMatch[2].trim()
+            let name = rawName
+            let start = i + 1
+            let end = i + 50
+
+            // limit end to file length temporarily
+            if (end > lines.length) end = lines.length
+
+            // Try to extract (Lines X-Y) from the name
+            const linesMatch = rawName.match(/(.*?)\s*\(Lines\s*(\d+)-(\d+)\)$/i)
+
+            if (linesMatch) {
+                name = linesMatch[1].trim()
+                start = parseInt(linesMatch[2])
+                end = parseInt(linesMatch[3])
+            }
 
             currentSection = {
                 name,
@@ -133,6 +147,18 @@ function extractTargetFile(content: string, fullPath: string): string {
     return relative.replace(/\\/g, '/')
 }
 
+// Helper to count lines in a file
+function countLines(filePath: string): number {
+    try {
+        if (!fs.existsSync(filePath)) return 0
+        const content = fs.readFileSync(filePath, 'utf-8')
+        return content.split(/\r\n|\r|\n/).length
+    } catch (e) {
+        console.warn(`Could not count lines for ${filePath}`)
+        return 0
+    }
+}
+
 export async function POST() {
     try {
         if (!fs.existsSync(APP_DIR)) {
@@ -147,41 +173,50 @@ export async function POST() {
             const fileName = path.basename(filePath)
 
             // Determine target JS file (e.g. app/dashboard/page.js)
-            const targetFilePath = extractTargetFile(content, filePath)
+            const targetFilePathRelative = extractTargetFile(content, filePath)
+            // Construct absolute path for line counting
+            // Ensure we correctly join paths regardless of OS
+            const targetFilePathAbsolute = path.join(PROJECT_ROOT, targetFilePathRelative.split('/').join(path.sep))
 
             // Handle MASTER_PROMPT or generic master prompts
             if (fileName.includes('MASTER') || content.includes('MASTER NLP PROMPT')) {
                 const parsedMaster = parseMasterPrompt(content)
                 await prisma.masterPrompt.upsert({
-                    where: { pageFilePath: targetFilePath },
+                    where: { pageFilePath: targetFilePathRelative },
                     update: parsedMaster,
                     create: {
-                        pageFilePath: targetFilePath,
+                        pageFilePath: targetFilePathRelative,
                         ...parsedMaster
                     }
                 })
-                processed.push({ file: fileName, type: 'master', target: targetFilePath })
+                processed.push({ file: fileName, type: 'master', target: targetFilePathRelative })
                 continue
             }
 
             // Handle regular prompt files
             const sections = parsePromptFile(content)
 
-            // If no sections found, skip (likely not a prompt file)
-            if (sections.length === 0) continue
+            // If no sections found, skip (likely not a prompt file or failed parsing)
+            if (sections.length === 0) {
+                console.log(`Skipping ${fileName}: No sections found`)
+                continue
+            }
+
+            // Calculate actual lines of code from the source file
+            const actualTotalLines = countLines(targetFilePathAbsolute)
 
             // Delete existing page entry to full refresh
-            await prisma.page.deleteMany({ where: { filePath: targetFilePath } })
+            await prisma.page.deleteMany({ where: { filePath: targetFilePathRelative } })
 
             // Create new page entry
-            const jsFileName = path.basename(targetFilePath)
+            const jsFileName = path.basename(targetFilePathRelative)
             const componentName = jsFileName.replace(/\.(js|jsx|ts|tsx)$/, '')
 
             await prisma.page.create({
                 data: {
-                    filePath: targetFilePath,
+                    filePath: targetFilePathRelative,
                     componentName: componentName,
-                    totalLines: 1000,
+                    totalLines: actualTotalLines || 0, // Use dynamic count
                     purpose: `Prompt file for ${jsFileName}`,
                     promptFilePath: filePath,
                     rawContent: content,
@@ -202,7 +237,13 @@ export async function POST() {
                     }
                 }
             })
-            processed.push({ file: fileName, type: 'page', target: targetFilePath })
+            processed.push({
+                file: fileName,
+                type: 'page',
+                target: targetFilePathRelative,
+                lines: actualTotalLines,
+                sections: sections.length
+            })
         }
 
         return NextResponse.json({ success: true, processed })
