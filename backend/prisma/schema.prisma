@@ -119,3 +119,35 @@ model MasterPrompt {
 
   @@map("master_prompts")
 }
+
+// User model for authentication
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  name      String
+  role      String    @default("user")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  projects  Project[]
+
+  @@map("users")
+}
+
+// Project model for multi-project support
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  path        String
+  description String?
+  isActive    Boolean  @default(false)
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, path])
+  @@map("projects")
+}

@@ -1,0 +1,4 @@
+
+Email	Password
+admin@hrassist.com	admin123
+user@hrassist.com	user123

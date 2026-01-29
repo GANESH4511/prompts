@@ -6,6 +6,8 @@ const pagesRouter = require('./routes/pages');
 const seedRouter = require('./routes/seed');
 const saveRouter = require('./routes/save');
 const promptsRouter = require('./routes/prompts');
+const authRouter = require('./routes/auth');
+const projectsRouter = require('./routes/projects');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -22,6 +24,8 @@ app.use('/api/pages', pagesRouter);
 app.use('/api/seed', seedRouter);
 app.use('/api/save', saveRouter);
 app.use('/api/prompts', promptsRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/projects', projectsRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
