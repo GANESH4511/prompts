@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { login, setAuthData } from '@/lib/api';
 
 // Pre-defined particle positions to avoid hydration mismatch
@@ -225,9 +226,9 @@ export default function LoginPage() {
                     {/* Sign Up Link */}
                     <p className="text-center text-gray-400 text-xs sm:text-sm mt-6 sm:mt-8">
                         Don&apos;t have an account?{' '}
-                        <a href="#" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+                        <Link href="/register" className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
                             Create one
-                        </a>
+                        </Link>
                     </p>
                 </div>
 
