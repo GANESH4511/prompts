@@ -137,6 +137,8 @@ router.post('/login', async (req, res) => {
         const refreshToken = generateRefreshToken(user);
 
         console.log('✅ Login successful for:', user.email);
+        console.log('🔑 JWT Access Token:', accessToken);
+        console.log('🔄 JWT Refresh Token:', refreshToken);
 
         // Return success response
         res.json({
