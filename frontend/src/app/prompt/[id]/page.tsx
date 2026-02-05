@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { apiRequest, getAccessToken, clearAuthData } from '@/lib/api'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 // API Base URL from environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
@@ -380,6 +381,9 @@ export default function PromptDetailPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
+
+                        {/* Theme Toggle */}
+                        <ThemeToggle />
                     </div>
                 </div>
 
@@ -427,8 +431,8 @@ export default function PromptDetailPage() {
                                             onClick={handleSave}
                                             disabled={saving || promptFilter !== 'ALL'}
                                             className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg font-bold shadow-lg transition-all ${promptFilter === 'ALL'
-                                                    ? 'bg-green-600 hover:bg-green-500 disabled:bg-green-800 shadow-green-500/20 active:scale-95'
-                                                    : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                                                ? 'bg-green-600 hover:bg-green-500 disabled:bg-green-800 shadow-green-500/20 active:scale-95'
+                                                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
                                                 }`}
                                             title={promptFilter !== 'ALL' ? "Switch to 'PROMPTS' view to save changes" : "Save changes"}
                                         >
