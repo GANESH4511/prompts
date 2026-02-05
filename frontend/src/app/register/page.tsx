@@ -290,8 +290,8 @@ export default function RegisterPage() {
                                             <div
                                                 key={level}
                                                 className={`h-1 flex-1 rounded-full transition-all duration-300 ${level <= passwordStrength
-                                                        ? getPasswordStrengthColor()
-                                                        : 'bg-white/10'
+                                                    ? getPasswordStrengthColor()
+                                                    : 'bg-white/10'
                                                     }`}
                                             />
                                         ))}
@@ -321,10 +321,10 @@ export default function RegisterPage() {
                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                     required
                                     className={`w-full pl-10 sm:pl-12 pr-10 sm:pr-12 py-3 sm:py-3.5 bg-white/5 border rounded-lg sm:rounded-xl text-sm sm:text-base text-white placeholder-gray-500 focus:outline-none focus:ring-2 transition-all duration-300 ${confirmPassword && password !== confirmPassword
-                                            ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
-                                            : confirmPassword && password === confirmPassword
-                                                ? 'border-green-500/50 focus:ring-green-500/50 focus:border-green-500/50'
-                                                : 'border-white/10 focus:ring-purple-500/50 focus:border-purple-500/50'
+                                        ? 'border-red-500/50 focus:ring-red-500/50 focus:border-red-500/50'
+                                        : confirmPassword && password === confirmPassword
+                                            ? 'border-green-500/50 focus:ring-green-500/50 focus:border-green-500/50'
+                                            : 'border-white/10 focus:ring-purple-500/50 focus:border-purple-500/50'
                                         }`}
                                     placeholder="••••••••"
                                 />

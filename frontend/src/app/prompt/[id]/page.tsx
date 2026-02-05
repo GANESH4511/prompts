@@ -116,7 +116,7 @@ export default function PromptDetailPage() {
     const [isEditing, setIsEditing] = useState(false)
     const [searchQuery, setSearchQuery] = useState('')
     const [saving, setSaving] = useState(false)
-    const [promptFilter, setPromptFilter] = useState<'ALL' | 'NLP' | 'DEVELOPER'>('ALL')
+    const [promptFilter, setPromptFilter] = useState<'BOTH' | 'NLP' | 'DEVELOPER'>('NLP')
 
     useEffect(() => {
         const token = getAccessToken()
@@ -314,15 +314,6 @@ export default function PromptDetailPage() {
                         {/* Prompt Type Filter Radio Buttons */}
                         <div className="flex items-center gap-1 sm:gap-2 bg-slate-800/80 rounded-lg p-1 border border-slate-600/50">
                             <button
-                                onClick={() => setPromptFilter('ALL')}
-                                className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all ${promptFilter === 'ALL'
-                                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30'
-                                    : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
-                                    }`}
-                            >
-                                PROMPTS
-                            </button>
-                            <button
                                 onClick={() => setPromptFilter('NLP')}
                                 className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all ${promptFilter === 'NLP'
                                     ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white shadow-lg shadow-emerald-500/30'
@@ -339,6 +330,15 @@ export default function PromptDetailPage() {
                                     }`}
                             >
                                 DEVELOPER
+                            </button>
+                            <button
+                                onClick={() => setPromptFilter('BOTH')}
+                                className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all ${promptFilter === 'BOTH'
+                                    ? 'bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg shadow-indigo-500/30'
+                                    : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                                    }`}
+                            >
+                                BOTH
                             </button>
                         </div>
 
@@ -425,14 +425,14 @@ export default function PromptDetailPage() {
                                         </div>
                                         <button
                                             onClick={handleSave}
-                                            disabled={saving || promptFilter !== 'ALL'}
-                                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg font-bold shadow-lg transition-all ${promptFilter === 'ALL'
-                                                    ? 'bg-green-600 hover:bg-green-500 disabled:bg-green-800 shadow-green-500/20 active:scale-95'
-                                                    : 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                                            disabled={saving || promptFilter !== 'BOTH'}
+                                            className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-lg font-bold shadow-lg transition-all ${promptFilter === 'BOTH'
+                                                ? 'bg-green-600 hover:bg-green-500 disabled:bg-green-800 shadow-green-500/20 active:scale-95'
+                                                : 'bg-slate-700 text-slate-400 cursor-not-allowed'
                                                 }`}
-                                            title={promptFilter !== 'ALL' ? "Switch to 'PROMPTS' view to save changes" : "Save changes"}
+                                            title={promptFilter !== 'BOTH' ? "Switch to 'BOTH' view to save changes" : "Save changes"}
                                         >
-                                            {promptFilter === 'ALL' ? (saving ? '💾 Saving...' : '💾 Save & Reprocess') : '🔒 Switch to PROMPTS to Save'}
+                                            {promptFilter === 'BOTH' ? (saving ? '💾 Saving...' : '💾 Save & Reprocess') : '🔒 Switch to BOTH to Save'}
                                         </button>
                                     </div>
                                     <textarea
@@ -449,17 +449,76 @@ export default function PromptDetailPage() {
 
                 {/* Content View - Text Based */}
                 {(() => {
+                    // For BOTH view - show side-by-side columns
+                    if (promptFilter === 'BOTH') {
+                        const lines = page.rawContent?.split('\n') || []
+                        const nlpContent = nlpSections
+                            .sort((a, b) => a.startLine - b.startLine)
+                            .map(s => lines.slice(s.startLine - 1, s.endLine).join('\n'))
+                            .join('\n\n')
+                        const devContent = devSections
+                            .sort((a, b) => a.startLine - b.startLine)
+                            .map(s => lines.slice(s.startLine - 1, s.endLine).join('\n'))
+                            .join('\n\n')
+
+                        if (!nlpContent && !devContent) {
+                            return (
+                                <div className="glass-panel rounded-xl sm:rounded-2xl p-12 text-center text-slate-400">
+                                    <p>No content found for this section.</p>
+                                </div>
+                            )
+                        }
+
+                        return (
+                            <div className="glass-panel rounded-xl sm:rounded-2xl p-4 sm:p-6 overflow-hidden">
+                                {/* Two-column layout for BOTH view */}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    {/* NLP Column */}
+                                    <div className="flex flex-col">
+                                        <div className="flex justify-between items-center mb-3 pb-2 border-b border-emerald-500/30">
+                                            <h3 className="text-sm sm:text-base font-semibold text-emerald-400 flex items-center gap-2">
+                                                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                                                NLP Prompt
+                                            </h3>
+                                            <CopyButton text={nlpContent} />
+                                        </div>
+                                        <div className="bg-slate-900/50 rounded-lg border border-slate-700/50 overflow-hidden" style={{ height: '600px' }}>
+                                            <pre className="text-slate-300 font-mono text-[10px] sm:text-xs p-4 whitespace-pre-wrap h-full overflow-y-auto">
+                                                {nlpContent || <span className="text-slate-500 italic">No NLP content found</span>}
+                                            </pre>
+                                        </div>
+                                    </div>
+
+                                    {/* Developer Column */}
+                                    <div className="flex flex-col">
+                                        <div className="flex justify-between items-center mb-3 pb-2 border-b border-purple-500/30">
+                                            <h3 className="text-sm sm:text-base font-semibold text-purple-400 flex items-center gap-2">
+                                                <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+                                                Developer Prompt
+                                            </h3>
+                                            <CopyButton text={devContent} />
+                                        </div>
+                                        <div className="bg-slate-900/50 rounded-lg border border-slate-700/50 overflow-hidden" style={{ height: '600px' }}>
+                                            <pre className="text-slate-300 font-mono text-[10px] sm:text-xs p-4 whitespace-pre-wrap h-full overflow-y-auto">
+                                                {devContent || <span className="text-slate-500 italic">No Developer content found</span>}
+                                            </pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
+
+                    // For NLP or DEVELOPER individual views - show single column
                     let contentToDisplay = ''
 
-                    if (promptFilter === 'ALL') {
-                        contentToDisplay = page.rawContent || ''
-                    } else if (promptFilter === 'NLP') {
+                    if (promptFilter === 'NLP') {
                         if (page.rawContent) {
                             const lines = page.rawContent.split('\n')
                             contentToDisplay = nlpSections
                                 .sort((a, b) => a.startLine - b.startLine)
                                 .map(s => lines.slice(s.startLine - 1, s.endLine).join('\n'))
-                                .join('\n\n') // Add separation between disjoint blocks
+                                .join('\n\n')
                         }
                     } else if (promptFilter === 'DEVELOPER') {
                         if (page.rawContent) {
@@ -481,7 +540,6 @@ export default function PromptDetailPage() {
 
                     return (
                         <div className="glass-panel rounded-xl sm:rounded-2xl p-4 sm:p-6 overflow-hidden">
-                            {/* Optional: Add a copy button for the whole block? User didn't ask but it's nice. */}
                             <div className="flex justify-end mb-2">
                                 <CopyButton text={contentToDisplay} />
                             </div>
