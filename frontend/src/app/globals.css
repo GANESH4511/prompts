@@ -2,41 +2,260 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 
+   Color Palette from user:
+   1. #FAF8FF - Very light lavender (background)
+   2. #E8DDF0 - Light pink/lavender (accent/surface)
+   3. #C4B5F0 - Medium lavender (secondary)
+   4. #A898E8 - Purple/violet (primary)
+*/
+
+/* Light Mode (default) - Using provided color palette */
 :root {
+    --background: #FAF8FF;
+    --foreground: #000000;
+    --primary: #A898E8;
+    --primary-hover: #9888D8;
+    --secondary: #C4B5F0;
+    --accent: #E8DDF0;
+    --surface: #ffffff;
+    --surface-secondary: #FAF8FF;
+    --border: #C4B5F0;
+    --text-primary: #000000;
+    --text-secondary: #1a1a2e;
+    --text-muted: #3a3a5a;
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --glass-border: #C4B5F0;
+    --shadow-color: rgba(168, 152, 232, 0.25);
+    --scrollbar-track: #E8DDF0;
+    --scrollbar-thumb: #C4B5F0;
+    --scrollbar-thumb-hover: #A898E8;
+    --glow-color: rgba(168, 152, 232, 0.4);
+
+    /* Palette colors as direct variables */
+    --palette-1: #FAF8FF;
+    --palette-2: #E8DDF0;
+    --palette-3: #C4B5F0;
+    --palette-4: #A898E8;
+}
+
+/* Dark Mode - Inverted palette for dark theme */
+.dark {
     --background: #030014;
     --foreground: #ffffff;
+    --primary: #9B8BE0;
+    --primary-hover: #B8A8E8;
+    --secondary: #8A7BD0;
+    --accent: #2a2040;
+    --surface: rgba(17, 25, 40, 0.9);
+    --surface-secondary: rgba(30, 35, 55, 0.9);
+    --border: rgba(155, 139, 224, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: #c4c4d4;
+    --text-muted: #9494b4;
+    --glass-bg: rgba(17, 25, 40, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --scrollbar-track: rgba(0, 0, 0, 0.2);
+    --scrollbar-thumb: rgba(155, 139, 224, 0.3);
+    --scrollbar-thumb-hover: rgba(155, 139, 224, 0.5);
+    --glow-color: rgba(155, 139, 224, 0.4);
 }
 
 body {
     background-color: var(--background);
     color: var(--foreground);
     background-image:
-        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+        radial-gradient(at 0% 0%, rgba(155, 139, 224, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(184, 168, 232, 0.15) 0px, transparent 50%);
     background-attachment: fixed;
     min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode Text Color Overrides - Force black text */
+:root:not(.dark) body,
+:root:not(.dark) p,
+:root:not(.dark) span,
+:root:not(.dark) h1,
+:root:not(.dark) h2,
+:root:not(.dark) h3,
+:root:not(.dark) h4,
+:root:not(.dark) h5,
+:root:not(.dark) h6,
+:root:not(.dark) label,
+:root:not(.dark) div {
+    color: #000000;
+}
+
+/* Override Tailwind gray/slate text colors in light mode */
+html:not(.dark) .text-gray-300,
+html:not(.dark) .text-gray-400,
+html:not(.dark) .text-gray-500,
+html:not(.dark) .text-gray-600,
+html:not(.dark) .text-slate-200,
+html:not(.dark) .text-slate-300,
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-slate-500,
+html:not(.dark) .text-white {
+    color: #000000 !important;
+}
+
+/* Light mode placeholder text */
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+    color: #666666 !important;
+}
+
+/* Light mode input text */
+html:not(.dark) input,
+html:not(.dark) textarea {
+    color: #000000 !important;
+}
+
+/* Keep button text white for contrast on colored backgrounds */
+html:not(.dark) button[class*="bg-indigo"],
+html:not(.dark) button[class*="bg-purple"],
+html:not(.dark) button[class*="bg-green"],
+html:not(.dark) button[class*="bg-gradient"] {
+    color: #ffffff !important;
+}
+
+/* Keep badge/tag text readable */
+html:not(.dark) .text-indigo-400,
+html:not(.dark) .text-purple-400,
+html:not(.dark) .text-emerald-400,
+html:not(.dark) .text-green-400,
+html:not(.dark) .text-amber-400,
+html:not(.dark) .text-pink-400,
+html:not(.dark) .text-red-400 {
+    color: inherit !important;
+}
+
+/* Pre/code blocks - keep readable */
+html:not(.dark) pre,
+html:not(.dark) code {
+    color: #1a1a2e !important;
+}
+
+/* Light Mode - Apply Palette Colors to UI Elements */
+
+/* Buttons with indigo/purple backgrounds - use palette purple */
+html:not(.dark) button[class*="bg-indigo-600"],
+html:not(.dark) button[class*="bg-indigo-500"],
+html:not(.dark) [class*="bg-indigo-600"],
+html:not(.dark) [class*="bg-indigo-500"] {
+    background-color: #A898E8 !important;
+}
+
+html:not(.dark) button[class*="bg-indigo-600"]:hover,
+html:not(.dark) button[class*="bg-indigo-500"]:hover {
+    background-color: #9888D8 !important;
+}
+
+/* Input fields in light mode */
+html:not(.dark) input[class*="bg-white/5"],
+html:not(.dark) textarea[class*="bg-white/5"],
+html:not(.dark) input[class*="bg-slate-900"],
+html:not(.dark) textarea[class*="bg-slate-900"] {
+    background-color: #FAF8FF !important;
+    border-color: #C4B5F0 !important;
+}
+
+html:not(.dark) input:focus,
+html:not(.dark) textarea:focus {
+    border-color: #A898E8 !important;
+    box-shadow: 0 0 0 2px rgba(168, 152, 232, 0.3) !important;
+}
+
+/* Cards and panels */
+html:not(.dark) [class*="bg-slate-800"],
+html:not(.dark) [class*="bg-slate-900"],
+html:not(.dark) [class*="bg-black/"] {
+    background-color: #E8DDF0 !important;
+}
+
+/* Folder/File list items */
+html:not(.dark) [class*="bg-white/50"],
+html:not(.dark) [class*="bg-slate-900/50"] {
+    background-color: #FAF8FF !important;
+    border-color: #C4B5F0 !important;
+}
+
+/* Active/selected states */
+html:not(.dark) [class*="ring-indigo-500"] {
+    --tw-ring-color: #A898E8 !important;
+}
+
+/* Border colors */
+html:not(.dark) [class*="border-white/10"],
+html:not(.dark) [class*="border-slate-600"],
+html:not(.dark) [class*="border-slate-700"] {
+    border-color: #C4B5F0 !important;
+}
+
+/* Icon backgrounds */
+html:not(.dark) [class*="bg-white/5"] {
+    background-color: #E8DDF0 !important;
+}
+
+/* Search input */
+html:not(.dark) input[type="text"],
+html:not(.dark) input[type="email"],
+html:not(.dark) input[type="password"] {
+    background-color: #FAF8FF !important;
+    border-color: #C4B5F0 !important;
+}
+
+/* Gradient text - keep visible */
+html:not(.dark) [class*="bg-gradient-to-r"][class*="bg-clip-text"] {
+    color: #A898E8 !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
 }
 
 /* Glassmorphism Utilities */
 .glass-panel {
-    background: rgba(17, 25, 40, 0.75);
+    background: var(--glass-bg);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+    transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .glass-card {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+    background: linear-gradient(145deg, var(--surface) 0%, var(--surface-secondary) 100%);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
-    border-color: rgba(99, 102, 241, 0.3);
+    border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 30px var(--shadow-color);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--accent);
+    border-color: var(--primary);
+    transform: scale(1.05);
 }
 
 /* Custom Scrollbar */
@@ -46,16 +265,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(99, 102, 241, 0.3);
+    background: var(--scrollbar-thumb);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(99, 102, 241, 0.5);
+    background: var(--scrollbar-thumb-hover);
 }
 
 /* Animations */
@@ -63,11 +282,11 @@ body {
 
     0%,
     100% {
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        box-shadow: 0 0 20px var(--glow-color);
     }
 
     50% {
-        box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 30px var(--glow-color);
     }
 }
 

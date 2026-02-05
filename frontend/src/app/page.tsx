@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { apiRequest, getAccessToken, clearAuthData } from '@/lib/api'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 // API Base URL from environment variable
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
@@ -78,8 +79,8 @@ const CopyButton = ({ text }: { text: string }) => {
         <button
             onClick={handleCopy}
             className={`text-xs px-2 py-1 rounded transition-colors border ${copied
-                ? 'bg-green-500/20 text-green-300 border-green-500/30'
-                : 'bg-white/5 text-gray-400 border-white/10 hover:bg-white/10 hover:text-white'
+                ? 'bg-green-500/20 text-green-700 dark:text-green-300 border-green-500/30'
+                : 'bg-slate-200 dark:bg-white/5 text-gray-500 dark:text-gray-400 border-slate-200 dark:border-white/10 hover:bg-slate-300 dark:bg-white/10 hover:text-slate-900 dark:text-white'
                 }`}
         >
             {copied ? '✓ Copied' : 'Copy'}
@@ -89,11 +90,11 @@ const CopyButton = ({ text }: { text: string }) => {
 
 const Badge = ({ children, color = 'blue' }: { children: React.ReactNode, color?: 'blue' | 'purple' | 'green' | 'amber' | 'red' }) => {
     const colors = {
-        blue: 'bg-blue-500/10 text-blue-300 border-blue-500/20',
-        purple: 'bg-purple-500/10 text-purple-300 border-purple-500/20',
-        green: 'bg-green-500/10 text-green-300 border-green-500/20',
-        amber: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
-        red: 'bg-red-500/10 text-red-300 border-red-500/20',
+        blue: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20',
+        purple: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
+        green: 'bg-green-500/10 text-green-700 dark:text-green-300 border-green-500/20',
+        amber: 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/20',
+        red: 'bg-red-500/10 text-red-700 dark:text-red-300 border-red-500/20',
     }
 
     return (
@@ -133,7 +134,7 @@ const FolderCard = ({ folderName, pages, onNavigateToFile, isExpanded, onToggle 
             {/* Folder Header - Clickable */}
             <button
                 onClick={onToggle}
-                className="w-full p-4 sm:p-6 lg:p-8 text-left bg-gradient-to-br from-slate-800/50 to-slate-900/50 hover:from-slate-700/50 hover:to-slate-800/50 active:from-slate-700/60 active:to-slate-800/60 transition-all"
+                className="w-full p-4 sm:p-6 lg:p-8 text-left bg-gradient-to-br from-slate-100/50 dark:from-slate-800/50 to-slate-200/50 dark:to-slate-900/50 hover:from-slate-700/50 hover:to-slate-800/50 active:from-slate-700/60 active:to-slate-800/60 transition-all"
             >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div className="flex items-center gap-3 sm:gap-5">
@@ -141,8 +142,8 @@ const FolderCard = ({ folderName, pages, onNavigateToFile, isExpanded, onToggle 
                             <span className="text-xl sm:text-2xl lg:text-3xl">{isExpanded ? '📂' : '📁'}</span>
                         </div>
                         <div className="min-w-0">
-                            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-0.5 sm:mb-1 truncate">{getDisplayName(folderName)}</h2>
-                            <p className="text-xs sm:text-sm text-slate-400 font-mono truncate">{folderName}</p>
+                            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 dark:text-white mb-0.5 sm:mb-1 truncate">{getDisplayName(folderName)}</h2>
+                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono truncate">{folderName}</p>
                         </div>
                     </div>
 
@@ -150,25 +151,25 @@ const FolderCard = ({ folderName, pages, onNavigateToFile, isExpanded, onToggle 
                         {/* Stats - Fixed alignment with min-width */}
                         <div className="flex gap-4 sm:gap-6">
                             <div className="min-w-[40px] sm:min-w-[60px] text-center">
-                                <div className="text-base sm:text-lg lg:text-xl font-bold text-indigo-400">{pages.length}</div>
-                                <div className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide">Files</div>
+                                <div className="text-base sm:text-lg lg:text-xl font-bold text-indigo-600 dark:text-indigo-400">{pages.length}</div>
+                                <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wide">Files</div>
                             </div>
                             <div className="min-w-[50px] sm:min-w-[70px] text-center">
-                                <div className="text-base sm:text-lg lg:text-xl font-bold text-emerald-400">{totalLines.toLocaleString()}</div>
-                                <div className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide">LOC</div>
+                                <div className="text-base sm:text-lg lg:text-xl font-bold text-emerald-600 dark:text-emerald-400">{totalLines.toLocaleString()}</div>
+                                <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wide">LOC</div>
                             </div>
                             <div className="hidden xs:block min-w-[50px] sm:min-w-[70px] text-center">
-                                <div className="text-base sm:text-lg lg:text-xl font-bold text-amber-400">{totalSections}</div>
-                                <div className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wide">Sections</div>
+                                <div className="text-base sm:text-lg lg:text-xl font-bold text-amber-600 dark:text-amber-400">{totalSections}</div>
+                                <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wide">Sections</div>
                             </div>
                             <div className="hidden sm:block min-w-[70px] text-center">
-                                <div className="text-xl font-bold text-pink-400">{totalPrompts}</div>
-                                <div className="text-xs text-slate-500 uppercase tracking-wide">Prompts</div>
+                                <div className="text-xl font-bold text-pink-600 dark:text-pink-400">{totalPrompts}</div>
+                                <div className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-wide">Prompts</div>
                             </div>
                         </div>
 
                         {/* Toggle Icon */}
-                        <div className={`text-lg sm:text-xl lg:text-2xl text-slate-400 transition-transform duration-300 ml-1 sm:ml-2 ${isExpanded ? 'rotate-180' : ''}`}>
+                        <div className={`text-lg sm:text-xl lg:text-2xl text-slate-500 dark:text-slate-400 transition-transform duration-300 ml-1 sm:ml-2 ${isExpanded ? 'rotate-180' : ''}`}>
                             ▼
                         </div>
                     </div>
@@ -178,39 +179,39 @@ const FolderCard = ({ folderName, pages, onNavigateToFile, isExpanded, onToggle 
 
             {/* Files List - Expandable */}
             {isExpanded && (
-                <div className="border-t border-white/10 bg-black/30">
+                <div className="border-t border-slate-200 dark:border-white/10 bg-slate-200/50 dark:bg-black/30">
                     <div className="p-2 sm:p-4 space-y-1 sm:space-y-2">
                         {pages.map((page) => (
                             <button
                                 key={page.id}
                                 onClick={() => onNavigateToFile(page.id)}
-                                className="w-full flex items-center justify-between p-3 sm:p-4 rounded-lg sm:rounded-xl bg-slate-900/50 hover:bg-slate-800/70 active:bg-slate-800/90 border border-white/5 hover:border-indigo-500/30 transition-all group"
+                                className="w-full flex items-center justify-between p-3 sm:p-4 rounded-lg sm:rounded-xl bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100/70 dark:bg-slate-800/70 active:bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/5 hover:border-indigo-500/30 transition-all group"
                             >
                                 <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                                     <span className="text-lg sm:text-xl flex-shrink-0">📄</span>
                                     <div className="text-left min-w-0">
-                                        <div className="font-semibold text-sm sm:text-base text-white group-hover:text-indigo-300 transition-colors truncate">
+                                        <div className="font-semibold text-sm sm:text-base text-slate-900 dark:text-white group-hover:text-indigo-700 dark:text-indigo-300 transition-colors truncate">
                                             {page.componentName}
                                         </div>
-                                        <div className="text-[10px] sm:text-xs text-slate-500 font-mono truncate">
+                                        <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-mono truncate">
                                             {page.filePath.split('/').pop()}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
                                     <div className="min-w-[35px] sm:min-w-[50px] text-center">
-                                        <div className="text-xs sm:text-sm font-bold text-indigo-400">{page.totalLines}</div>
-                                        <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase">LOC</div>
+                                        <div className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400">{page.totalLines}</div>
+                                        <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase">LOC</div>
                                     </div>
                                     <div className="hidden xs:block min-w-[45px] sm:min-w-[55px] text-center">
-                                        <div className="text-xs sm:text-sm font-bold text-emerald-400">{page.sections.length}</div>
-                                        <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase">Sections</div>
+                                        <div className="text-xs sm:text-sm font-bold text-emerald-600 dark:text-emerald-400">{page.sections.length}</div>
+                                        <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase">Sections</div>
                                     </div>
                                     <div className="hidden sm:block min-w-[55px] text-center">
-                                        <div className="text-sm font-bold text-pink-400">{page.sections.reduce((s, sec) => s + sec.prompts.length, 0)}</div>
-                                        <div className="text-[10px] text-slate-500 uppercase">Prompts</div>
+                                        <div className="text-sm font-bold text-pink-600 dark:text-pink-400">{page.sections.reduce((s, sec) => s + sec.prompts.length, 0)}</div>
+                                        <div className="text-[10px] text-slate-400 dark:text-slate-500 uppercase">Prompts</div>
                                     </div>
-                                    <span className="text-slate-500 group-hover:text-indigo-400 transition-colors ml-1 sm:ml-2">→</span>
+                                    <span className="text-slate-400 dark:text-slate-500 group-hover:text-indigo-600 dark:text-indigo-400 transition-colors ml-1 sm:ml-2">→</span>
                                 </div>
                             </button>
                         ))}
@@ -282,42 +283,42 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto">
-            <div className="w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden rounded-2xl sm:rounded-3xl glass-card border border-white/10 flex flex-col my-2 sm:my-4">
+            <div className="w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden rounded-2xl sm:rounded-3xl glass-card border border-slate-200 dark:border-white/10 flex flex-col my-2 sm:my-4">
                 {/* Header */}
-                <div className="p-4 sm:p-6 border-b border-white/10 bg-gradient-to-r from-slate-800/50 to-slate-900/50">
+                <div className="p-4 sm:p-6 border-b border-slate-200 dark:border-white/10 bg-gradient-to-r from-slate-100/50 dark:from-slate-800/50 to-slate-200/50 dark:to-slate-900/50">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                                 <span className="text-xl sm:text-2xl">📄</span>
                             </div>
                             <div className="min-w-0">
-                                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate">{page.componentName}</h2>
-                                <p className="text-xs sm:text-sm text-slate-400 font-mono truncate">{page.filePath}</p>
+                                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 dark:text-white truncate">{page.componentName}</h2>
+                                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-mono truncate">{page.filePath}</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                             {/* Stats */}
                             <div className="flex gap-3 sm:gap-4 mr-2 sm:mr-4">
                                 <div className="text-center">
-                                    <div className="text-base sm:text-lg lg:text-xl font-bold text-indigo-400">{page.totalLines}</div>
-                                    <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase">Lines</div>
+                                    <div className="text-base sm:text-lg lg:text-xl font-bold text-indigo-600 dark:text-indigo-400">{page.totalLines}</div>
+                                    <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase">Lines</div>
                                 </div>
                                 <div className="text-center">
-                                    <div className="text-base sm:text-lg lg:text-xl font-bold text-emerald-400">{page.sections.length}</div>
-                                    <div className="text-[9px] sm:text-[10px] text-slate-500 uppercase">Sections</div>
+                                    <div className="text-base sm:text-lg lg:text-xl font-bold text-emerald-600 dark:text-emerald-400">{page.sections.length}</div>
+                                    <div className="text-[9px] sm:text-[10px] text-slate-400 dark:text-slate-500 uppercase">Sections</div>
                                 </div>
                             </div>
                             {page.rawContent && (
                                 <>
                                     <button
                                         onClick={downloadFile}
-                                        className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-800 hover:bg-slate-700 text-[10px] sm:text-xs rounded-lg border border-slate-600 transition-colors"
+                                        className="px-2 sm:px-3 py-1.5 sm:py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-700 text-[10px] sm:text-xs rounded-lg border border-slate-300 dark:border-slate-600 transition-colors"
                                     >
                                         <span className="hidden xs:inline">⬇️ </span>Download
                                     </button>
                                     <button
                                         onClick={() => setIsEditing(!isEditing)}
-                                        className={`px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs rounded-lg border transition-colors ${isEditing ? 'bg-indigo-600 border-indigo-500' : 'bg-slate-800 hover:bg-slate-700 border-slate-600'}`}
+                                        className={`px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] sm:text-xs rounded-lg border transition-colors ${isEditing ? 'bg-indigo-600 border-indigo-500' : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-700 border-slate-300 dark:border-slate-600'}`}
                                     >
                                         ✏️ <span className="hidden xs:inline">{isEditing ? 'Editing' : 'Edit'}</span>
                                     </button>
@@ -325,7 +326,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                             )}
                             <button
                                 onClick={onClose}
-                                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-slate-800 hover:bg-red-500/20 hover:text-red-400 transition-colors text-lg sm:text-xl"
+                                className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-red-500/20 hover:text-red-600 dark:text-red-400 transition-colors text-lg sm:text-xl"
                             >
                                 ×
                             </button>
@@ -333,16 +334,16 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                     </div>
 
                     {/* Purpose */}
-                    <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-300 line-clamp-2">{page.purpose}</p>
+                    <p className="mt-3 sm:mt-4 text-sm sm:text-base text-slate-700 dark:text-slate-300 line-clamp-2">{page.purpose}</p>
                 </div>
 
                 {/* Content */}
                 <div className="flex-1 overflow-auto p-3 sm:p-4 lg:p-6 space-y-3 sm:space-y-4">
                     {/* Editor */}
                     {isEditing && page.rawContent && (
-                        <div className="p-3 sm:p-4 bg-black/50 border border-slate-700 rounded-lg sm:rounded-xl">
+                        <div className="p-3 sm:p-4 bg-slate-200/80 dark:bg-black/50 border border-slate-200 dark:border-slate-700 rounded-lg sm:rounded-xl">
                             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
-                                <span className="text-[10px] sm:text-xs text-slate-400 font-mono truncate">Editing {page.componentName}.txt</span>
+                                <span className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 font-mono truncate">Editing {page.componentName}.txt</span>
                                 <button
                                     onClick={async () => {
                                         const textarea = document.getElementById(`editor-${page.id}`) as HTMLTextAreaElement
@@ -357,7 +358,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                             </div>
                             <textarea
                                 id={`editor-${page.id}`}
-                                className="w-full h-[250px] sm:h-[350px] lg:h-[400px] bg-slate-900 text-slate-300 font-mono text-[10px] sm:text-xs p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-y"
+                                className="w-full h-[250px] sm:h-[350px] lg:h-[400px] bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-mono text-[10px] sm:text-xs p-3 sm:p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-y"
                                 defaultValue={page.rawContent}
                             />
                         </div>
@@ -370,9 +371,9 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                             placeholder="Search sections and prompts..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 pl-8 sm:pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-xs sm:text-sm"
+                            className="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 pl-8 sm:pl-10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-xs sm:text-sm"
                         />
-                        <span className="absolute left-2.5 sm:left-3 top-2.5 sm:top-3.5 text-slate-500 text-sm">🔍</span>
+                        <span className="absolute left-2.5 sm:left-3 top-2.5 sm:top-3.5 text-slate-400 dark:text-slate-500 text-sm">🔍</span>
                     </div>
 
                     {/* Sections - Grouped by NLP and Developer */}
@@ -406,12 +407,12 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                             <span className="text-xl sm:text-2xl">💬</span>
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg sm:text-xl font-bold text-emerald-300">NLP Prompts</h3>
-                                                            <p className="text-xs sm:text-sm text-emerald-400/70">User-friendly • Easy to Understand & Modify</p>
+                                                            <h3 className="text-lg sm:text-xl font-bold text-emerald-700 dark:text-emerald-300">NLP Prompts</h3>
+                                                            <p className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400/70">User-friendly • Easy to Understand & Modify</p>
                                                         </div>
                                                         <div className="ml-auto text-right">
-                                                            <div className="text-lg sm:text-xl font-bold text-emerald-400">{nlpSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
-                                                            <div className="text-[10px] sm:text-xs text-slate-500 uppercase">Prompts</div>
+                                                            <div className="text-lg sm:text-xl font-bold text-emerald-600 dark:text-emerald-400">{nlpSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
+                                                            <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase">Prompts</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -421,25 +422,25 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                     {nlpSections.map(section => {
                                                         const isExpanded = expandedSections.has(section.id) || !!searchQuery
                                                         return (
-                                                            <div key={section.id} className="bg-black/30 rounded-lg sm:rounded-xl border border-emerald-500/10 overflow-hidden">
+                                                            <div key={section.id} className="bg-slate-200/50 dark:bg-black/30 rounded-lg sm:rounded-xl border border-emerald-500/10 overflow-hidden">
                                                                 <button
                                                                     onClick={() => toggleSection(section.id)}
                                                                     className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-emerald-900/20 transition-colors text-left"
                                                                 >
                                                                     <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                                                                         <Badge color="green">{section.name}</Badge>
-                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
+                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-400 dark:text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="text-xs text-emerald-400">{section.prompts.length} prompts</span>
-                                                                        <span className={`text-emerald-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
+                                                                        <span className="text-xs text-emerald-600 dark:text-emerald-400">{section.prompts.length} prompts</span>
+                                                                        <span className={`text-emerald-600 dark:text-emerald-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
                                                                     </div>
                                                                 </button>
 
                                                                 {isExpanded && section.prompts.length > 0 && (
                                                                     <div className="p-3 sm:p-4 border-t border-emerald-500/10 space-y-2 sm:space-y-3">
                                                                         {section.purpose && section.purpose !== 'Section Purpose' && (
-                                                                            <p className="text-xs sm:text-sm text-slate-400 italic border-l-2 border-emerald-500/50 pl-2 sm:pl-3 mb-3">
+                                                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 italic border-l-2 border-emerald-500/50 pl-2 sm:pl-3 mb-3">
                                                                                 {section.purpose}
                                                                             </p>
                                                                         )}
@@ -451,7 +452,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                                                             e.stopPropagation()
                                                                                             scrollToLine(prompt.lineNumber || 1)
                                                                                         }}
-                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/40 border border-emerald-500/30 transition-colors"
+                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/40 border border-emerald-500/30 transition-colors"
                                                                                         title="Edit this prompt"
                                                                                     >
                                                                                         ✏️
@@ -465,7 +466,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                                                 {prompt.example && (
                                                                                     <div className="mt-2 pl-2 sm:pl-3 border-l-2 border-emerald-700/50">
                                                                                         <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Example</span>
-                                                                                        <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">{prompt.example}</div>
+                                                                                        <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{prompt.example}</div>
                                                                                     </div>
                                                                                 )}
                                                                             </div>
@@ -489,12 +490,12 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                             <span className="text-xl sm:text-2xl">⚙️</span>
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg sm:text-xl font-bold text-purple-300">Developer Prompts</h3>
-                                                            <p className="text-xs sm:text-sm text-purple-400/70">Technical & Precise • Code-focused</p>
+                                                            <h3 className="text-lg sm:text-xl font-bold text-purple-700 dark:text-purple-300">Developer Prompts</h3>
+                                                            <p className="text-xs sm:text-sm text-purple-600 dark:text-purple-400/70">Technical & Precise • Code-focused</p>
                                                         </div>
                                                         <div className="ml-auto text-right">
-                                                            <div className="text-lg sm:text-xl font-bold text-purple-400">{devSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
-                                                            <div className="text-[10px] sm:text-xs text-slate-500 uppercase">Prompts</div>
+                                                            <div className="text-lg sm:text-xl font-bold text-purple-600 dark:text-purple-400">{devSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
+                                                            <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase">Prompts</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -504,25 +505,25 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                     {devSections.map(section => {
                                                         const isExpanded = expandedSections.has(section.id) || !!searchQuery
                                                         return (
-                                                            <div key={section.id} className="bg-black/30 rounded-lg sm:rounded-xl border border-purple-500/10 overflow-hidden">
+                                                            <div key={section.id} className="bg-slate-200/50 dark:bg-black/30 rounded-lg sm:rounded-xl border border-purple-500/10 overflow-hidden">
                                                                 <button
                                                                     onClick={() => toggleSection(section.id)}
                                                                     className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-purple-900/20 transition-colors text-left"
                                                                 >
                                                                     <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                                                                         <Badge color="purple">{section.name}</Badge>
-                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
+                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-400 dark:text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="text-xs text-purple-400">{section.prompts.length} prompts</span>
-                                                                        <span className={`text-purple-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
+                                                                        <span className="text-xs text-purple-600 dark:text-purple-400">{section.prompts.length} prompts</span>
+                                                                        <span className={`text-purple-600 dark:text-purple-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
                                                                     </div>
                                                                 </button>
 
                                                                 {isExpanded && section.prompts.length > 0 && (
                                                                     <div className="p-3 sm:p-4 border-t border-purple-500/10 space-y-2 sm:space-y-3">
                                                                         {section.purpose && section.purpose !== 'Section Purpose' && (
-                                                                            <p className="text-xs sm:text-sm text-slate-400 italic border-l-2 border-purple-500/50 pl-2 sm:pl-3 mb-3">
+                                                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 italic border-l-2 border-purple-500/50 pl-2 sm:pl-3 mb-3">
                                                                                 {section.purpose}
                                                                             </p>
                                                                         )}
@@ -534,7 +535,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                                                             e.stopPropagation()
                                                                                             scrollToLine(prompt.lineNumber || 1)
                                                                                         }}
-                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-purple-500/20 text-purple-300 hover:bg-purple-500/40 border border-purple-500/30 transition-colors"
+                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-purple-500/20 text-purple-700 dark:text-purple-300 hover:bg-purple-500/40 border border-purple-500/30 transition-colors"
                                                                                         title="Edit this prompt"
                                                                                     >
                                                                                         ✏️
@@ -548,7 +549,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                                                 {prompt.example && (
                                                                                     <div className="mt-2 pl-2 sm:pl-3 border-l-2 border-purple-700/50">
                                                                                         <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Example</span>
-                                                                                        <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">{prompt.example}</div>
+                                                                                        <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{prompt.example}</div>
                                                                                     </div>
                                                                                 )}
                                                                             </div>
@@ -564,19 +565,19 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
 
                                         {/* Other Sections (not matching NLP or Developer) */}
                                         {otherSections.length > 0 && (
-                                            <div className="glass-panel rounded-xl sm:rounded-2xl overflow-hidden border border-white/10">
-                                                <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-800/40 to-slate-700/20 border-b border-white/10">
+                                            <div className="glass-panel rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10">
+                                                <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-100 dark:from-slate-800/40 to-slate-700/20 border-b border-slate-200 dark:border-white/10">
                                                     <div className="flex items-center gap-3">
                                                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-slate-500 to-slate-600 flex items-center justify-center shadow-lg shadow-slate-500/30">
                                                             <span className="text-xl sm:text-2xl">📋</span>
                                                         </div>
                                                         <div>
-                                                            <h3 className="text-lg sm:text-xl font-bold text-slate-300">Other Sections</h3>
-                                                            <p className="text-xs sm:text-sm text-slate-400/70">Additional prompts & content</p>
+                                                            <h3 className="text-lg sm:text-xl font-bold text-slate-700 dark:text-slate-300">Other Sections</h3>
+                                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400/70">Additional prompts & content</p>
                                                         </div>
                                                         <div className="ml-auto text-right">
-                                                            <div className="text-lg sm:text-xl font-bold text-slate-400">{otherSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
-                                                            <div className="text-[10px] sm:text-xs text-slate-500 uppercase">Prompts</div>
+                                                            <div className="text-lg sm:text-xl font-bold text-slate-500 dark:text-slate-400">{otherSections.reduce((sum, s) => sum + s.prompts.length, 0)}</div>
+                                                            <div className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 uppercase">Prompts</div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -585,37 +586,37 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                     {otherSections.map(section => {
                                                         const isExpanded = expandedSections.has(section.id) || !!searchQuery
                                                         return (
-                                                            <div key={section.id} className="bg-black/30 rounded-lg sm:rounded-xl border border-white/5 overflow-hidden">
+                                                            <div key={section.id} className="bg-slate-200/50 dark:bg-black/30 rounded-lg sm:rounded-xl border border-slate-200 dark:border-white/5 overflow-hidden">
                                                                 <button
                                                                     onClick={() => toggleSection(section.id)}
-                                                                    className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-white/5 transition-colors text-left"
+                                                                    className="w-full flex items-center justify-between p-3 sm:p-4 hover:bg-slate-200 dark:bg-white/5 transition-colors text-left"
                                                                 >
                                                                     <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                                                                         <Badge color="blue">{section.name}</Badge>
-                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
+                                                                        <span className="text-[10px] sm:text-xs font-mono text-slate-400 dark:text-slate-500 hidden xs:inline">L{section.startLine}-{section.endLine}</span>
                                                                     </div>
                                                                     <div className="flex items-center gap-2">
-                                                                        <span className="text-xs text-slate-400">{section.prompts.length} prompts</span>
-                                                                        <span className={`text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
+                                                                        <span className="text-xs text-slate-500 dark:text-slate-400">{section.prompts.length} prompts</span>
+                                                                        <span className={`text-slate-500 dark:text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}>▼</span>
                                                                     </div>
                                                                 </button>
 
                                                                 {isExpanded && section.prompts.length > 0 && (
-                                                                    <div className="p-3 sm:p-4 border-t border-white/5 space-y-2 sm:space-y-3">
+                                                                    <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-white/5 space-y-2 sm:space-y-3">
                                                                         {section.purpose && section.purpose !== 'Section Purpose' && (
-                                                                            <p className="text-xs sm:text-sm text-slate-400 italic border-l-2 border-indigo-500/50 pl-2 sm:pl-3 mb-3">
+                                                                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 italic border-l-2 border-indigo-500/50 pl-2 sm:pl-3 mb-3">
                                                                                 {section.purpose}
                                                                             </p>
                                                                         )}
                                                                         {section.prompts.map(prompt => (
-                                                                            <div key={prompt.id} className="group relative bg-slate-900/50 rounded-lg p-3 sm:p-4 border border-white/5 hover:border-indigo-500/40 transition-all">
+                                                                            <div key={prompt.id} className="group relative bg-white/50 dark:bg-slate-900/50 rounded-lg p-3 sm:p-4 border border-slate-200 dark:border-white/5 hover:border-indigo-500/40 transition-all">
                                                                                 <div className="absolute right-2 top-2 flex items-center gap-1 sm:gap-2 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                                                                     <button
                                                                                         onClick={(e) => {
                                                                                             e.stopPropagation()
                                                                                             scrollToLine(prompt.lineNumber || 1)
                                                                                         }}
-                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/40 border border-indigo-500/30 transition-colors"
+                                                                                        className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-500/40 border border-indigo-500/30 transition-colors"
                                                                                         title="Edit this prompt"
                                                                                     >
                                                                                         ✏️
@@ -623,13 +624,13 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                                                                                     <CopyButton text={prompt.template} />
                                                                                 </div>
                                                                                 <div className="pr-16 sm:pr-20">
-                                                                                    <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-500/60 tracking-wider">Line {prompt.lineNumber}</span>
-                                                                                    <div className="font-mono text-xs sm:text-sm text-slate-200 mt-1 break-words leading-relaxed">{prompt.template}</div>
+                                                                                    <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500/60 tracking-wider">Line {prompt.lineNumber}</span>
+                                                                                    <div className="font-mono text-xs sm:text-sm text-slate-800 dark:text-slate-200 mt-1 break-words leading-relaxed">{prompt.template}</div>
                                                                                 </div>
                                                                                 {prompt.example && (
-                                                                                    <div className="mt-2 pl-2 sm:pl-3 border-l-2 border-slate-700">
+                                                                                    <div className="mt-2 pl-2 sm:pl-3 border-l-2 border-slate-200 dark:border-slate-700">
                                                                                         <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-600 tracking-wider">Example</span>
-                                                                                        <div className="text-[10px] sm:text-xs text-slate-400 mt-0.5">{prompt.example}</div>
+                                                                                        <div className="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">{prompt.example}</div>
                                                                                     </div>
                                                                                 )}
                                                                             </div>
@@ -647,7 +648,7 @@ const FileDetailView = ({ page, masterPrompt, onClose, onSave }: {
                             })()}
                         </div>
                     ) : (
-                        <div className="glass-panel rounded-lg sm:rounded-xl p-8 sm:p-12 text-center text-slate-400">
+                        <div className="glass-panel rounded-lg sm:rounded-xl p-8 sm:p-12 text-center text-slate-500 dark:text-slate-400">
                             <p className="text-sm sm:text-base">No sections found. Click "Edit" to add sections.</p>
                         </div>
                     )}
@@ -760,7 +761,7 @@ export default function Home() {
     })
 
     return (
-        <div className="min-h-screen text-slate-200 p-3 sm:p-4 md:p-6 lg:p-8 font-sans">
+        <div className="min-h-screen text-slate-800 dark:text-slate-200 p-3 sm:p-4 md:p-6 lg:p-8 font-sans">
             {/* Navbar / Header */}
             <header className="max-w-7xl mx-auto mb-6 sm:mb-8 lg:mb-10 glass-panel rounded-xl sm:rounded-2xl p-4 sm:p-6">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 sm:gap-6">
@@ -768,10 +769,10 @@ export default function Home() {
                         {/* Back Button */}
                         <button
                             onClick={() => router.push('/home')}
-                            className="p-2 sm:p-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg sm:rounded-xl transition-all flex-shrink-0"
+                            className="p-2 sm:p-2.5 bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:bg-white/10 border border-slate-200 dark:border-white/10 rounded-lg sm:rounded-xl transition-all flex-shrink-0"
                             title="Back to Projects"
                         >
-                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
@@ -779,7 +780,7 @@ export default function Home() {
                             <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
                                 Agentic Prompt DB
                             </h1>
-                            <p className="text-xs sm:text-sm lg:text-base text-slate-400 mt-0.5 sm:mt-1 truncate">Centralized Instruction Metadata for HR Assist</p>
+                            <p className="text-xs sm:text-sm lg:text-base text-slate-500 dark:text-slate-400 mt-0.5 sm:mt-1 truncate">Centralized Instruction Metadata for HR Assist</p>
                         </div>
                     </div>
 
@@ -790,9 +791,9 @@ export default function Home() {
                                 placeholder="Search folders & files..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="bg-slate-900/50 border border-slate-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 pl-8 sm:pl-10 w-full xs:w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-xs sm:text-sm transition-all"
+                                className="bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 pl-8 sm:pl-10 w-full xs:w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-xs sm:text-sm transition-all"
                             />
-                            <span className="absolute left-2.5 sm:left-3 top-2 sm:top-2.5 text-slate-500 text-sm">🔍</span>
+                            <span className="absolute left-2.5 sm:left-3 top-2 sm:top-2.5 text-slate-400 dark:text-slate-500 text-sm">🔍</span>
                         </div>
 
                         <button
@@ -808,6 +809,9 @@ export default function Home() {
                         >
                             {seeding ? 'Syncing...' : <><span className="hidden xs:inline">🔄</span> Sync All Prompts</>}
                         </button>
+
+                        {/* Theme Toggle */}
+                        <ThemeToggle />
                     </div>
                 </div>
             </header>
@@ -816,7 +820,7 @@ export default function Home() {
                 {/* Error State */}
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/20 rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center animate-pulse-glow">
-                        <p className="text-red-300 font-medium mb-3 sm:mb-4 text-sm sm:text-base">⚠️ {error}</p>
+                        <p className="text-red-700 dark:text-red-300 font-medium mb-3 sm:mb-4 text-sm sm:text-base">⚠️ {error}</p>
                         <button onClick={handleSeed} className="text-[10px] sm:text-xs px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-200 transition-colors">
                             Retry Seeding
                         </button>
@@ -834,8 +838,8 @@ export default function Home() {
                 {!loading && !pages.length && !error && (
                     <div className="text-center py-16 sm:py-20 lg:py-24 glass-panel rounded-2xl sm:rounded-3xl px-4">
                         <div className="text-4xl sm:text-5xl lg:text-6xl mb-4 sm:mb-6 opacity-50">📭</div>
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-300 mb-3 sm:mb-4">Database is Empty</h2>
-                        <p className="text-sm sm:text-base text-slate-500 max-w-md mx-auto mb-6 sm:mb-8">
+                        <h2 className="text-xl sm:text-2xl font-bold text-slate-700 dark:text-slate-300 mb-3 sm:mb-4">Database is Empty</h2>
+                        <p className="text-sm sm:text-base text-slate-400 dark:text-slate-500 max-w-md mx-auto mb-6 sm:mb-8">
                             The metadata database has not been populated yet. Click the seed button to import prompts from your codebase.
                         </p>
                         <button onClick={handleSeed} className="px-6 sm:px-8 py-2.5 sm:py-3 bg-indigo-600 hover:bg-indigo-500 rounded-lg sm:rounded-xl font-bold text-sm sm:text-base shadow-lg shadow-indigo-500/25 transition-all">
@@ -850,16 +854,16 @@ export default function Home() {
                         {/* Stats Overview */}
                         <div className="grid grid-cols-3 gap-2 sm:gap-4">
                             <div className="glass-panel rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 text-center">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-indigo-400">{Object.keys(groupedPages).length}</div>
-                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-500 uppercase tracking-wide">Folders</div>
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-indigo-600 dark:text-indigo-400">{Object.keys(groupedPages).length}</div>
+                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-400 dark:text-slate-500 uppercase tracking-wide">Folders</div>
                             </div>
                             <div className="glass-panel rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 text-center">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-400">{pages.length}</div>
-                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-500 uppercase tracking-wide">Files</div>
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-600 dark:text-emerald-400">{pages.length}</div>
+                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-400 dark:text-slate-500 uppercase tracking-wide">Files</div>
                             </div>
                             <div className="glass-panel rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 text-center">
-                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-400">{pages.reduce((sum, p) => sum + p.totalLines, 0).toLocaleString()}</div>
-                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-500 uppercase tracking-wide">Total LOC</div>
+                                <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-amber-600 dark:text-amber-400">{pages.reduce((sum, p) => sum + p.totalLines, 0).toLocaleString()}</div>
+                                <div className="text-[10px] sm:text-xs lg:text-sm text-slate-400 dark:text-slate-500 uppercase tracking-wide">Total LOC</div>
                             </div>
                         </div>
 
