@@ -5,7 +5,36 @@ const { prisma } = require('../lib/prisma');
 
 const router = express.Router();
 
-const PROJECT_ROOT = process.env.PROJECT_ROOT || 'C:\\SNIX\\sify\\HrAssist\\exam';
+// Helper to find project root
+const findProjectRoot = () => {
+    // 1. Try environment variable
+    let candidates = [];
+    if (process.env.PROJECT_ROOT) {
+        candidates.push(process.env.PROJECT_ROOT);
+    }
+
+    // 2. Default hardcoded path
+    candidates.push('C:\\SNIX\\sify\\HrAssist\\exam');
+
+    // 3. Try relative path (traversing up from this file)
+    // This file is in: backend/src/routes/
+    // We want to reach: exam/
+    // So go up: routes -> src -> backend -> prompts (inner) -> prompts (outer) -> exam
+    const relativeRoot = path.resolve(__dirname, '../../../../../');
+    candidates.push(relativeRoot);
+
+    for (const root of candidates) {
+        const checkAppDir = path.join(root, 'app');
+        if (fs.existsSync(checkAppDir)) {
+            console.log(`Found valid project root at: ${root}`);
+            return root;
+        }
+    }
+
+    return process.env.PROJECT_ROOT || 'C:\\SNIX\\sify\\HrAssist\\exam';
+};
+
+const PROJECT_ROOT = findProjectRoot();
 const APP_DIR = path.join(PROJECT_ROOT, 'app');
 
 // Recursively find text files

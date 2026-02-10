@@ -511,26 +511,39 @@ export default function PromptDetailPage() {
                             const renderHighlightedContent = (content: string | null | undefined, type: 'NLP' | 'DEV') => {
                                 if (!content) return <span className="text-slate-500 italic">No {type} content found</span>
 
+                                let currentBlock: 'FRONTEND' | 'BACKEND' | 'DATABASE' | null = null
+
                                 return content.split('\n').map((line, i) => {
-                                    // Identify content type based on keywords if a filter is active
+                                    const lowerLine = line.trim().toLowerCase()
+
+                                    // Strict detection based on user request: starts with ### followed by section name
+                                    // Logic: ### marks start of a section. Identify which one.
+                                    if (lowerLine.startsWith('### frontend')) currentBlock = 'FRONTEND'
+                                    else if (lowerLine.startsWith('### backend')) currentBlock = 'BACKEND'
+                                    else if (lowerLine.startsWith('### database')) currentBlock = 'DATABASE'
+                                    // If it starts with ### but is NOT one of those, it's a different section, so reset.
+                                    else if (lowerLine.startsWith('###')) currentBlock = null
+
                                     let isMatch = false
-                                    let lineClass = 'highlight-line block min-h-[1.2em] '
+                                    // Base classes
+                                    let lineClass = 'highlight-line block min-h-[1.2em] transition-colors duration-200 '
 
                                     if (focusedFilter) {
-                                        const lowerLine = line.toLowerCase()
-                                        // Check for explicit tags first (e.g., [FRONTEND]) or keywords
-                                        const keywords = KEYWORDS[focusedFilter]
-
-                                        // Simple match: if line contains any keyword
-                                        // We might want to be stricter, but for now specific keywords work best
-                                        isMatch = keywords.some(k => lowerLine.includes(k)) ||
-                                            lowerLine.includes(`[${focusedFilter.toLowerCase()}]`)
+                                        // Match if we are inside the matching block
+                                        if (currentBlock === focusedFilter) {
+                                            isMatch = true
+                                        }
 
                                         if (isMatch) {
-                                            lineClass += `highlight-${focusedFilter.toLowerCase()} font-medium `
+                                            lineClass += `highlight-${focusedFilter.toLowerCase()} font-medium text-white bg-${focusedFilter === 'FRONTEND' ? 'blue' :
+                                                focusedFilter === 'BACKEND' ? 'purple' : 'emerald'
+                                                }-500/10 `
                                         } else {
-                                            lineClass += 'highlight-dimmed '
+                                            lineClass += 'highlight-dimmed text-slate-700 dark:text-slate-600 '
                                         }
+                                    } else {
+                                        // Normal state
+                                        lineClass += 'text-slate-300 '
                                     }
 
                                     return (
